@@ -9,12 +9,12 @@ using namespace std;
 
 // Node data
 struct ListNode {
-	string data;
+	int data;
 	ListNode *nextNode;
 } *firstNode = NULL;
 
 // Inserting from the front
-void frontInsert(string info) {
+void frontInsert(int info) {
 	ListNode *temp;
 	temp = (ListNode*)malloc(sizeof(ListNode));
 	temp->data = info;
@@ -32,7 +32,7 @@ void frontDelete() {
 }
 
 // Inserting from the back
-void behindInsert(string info) {
+void behindInsert(int info) {
 	ListNode *back;
 	back = (ListNode*)malloc(sizeof(ListNode));
 	back = firstNode;
@@ -67,27 +67,63 @@ void behindDelete() {
 }
 
 // Insert after a specified node
-void insertAfterPosition(string info, int position) {
-	if(position == 0) {
-		frontInsert(info);
-	} else {
-		ListNode *curNode;
-		curNode = (ListNode*)malloc(sizeof(ListNode));
+void insertAfterPosition(int info, int position) {
+	ListNode *curNode;
+	curNode = (ListNode*)malloc(sizeof(ListNode));
 
-		curNode = firstNode;
-		for(int i = 1; i < position; i++) {
-			curNode = curNode->nextNode;
-			if (curNode == NULL) {
-				break;
+	curNode = firstNode;
+	for(int i = 0; i < position; i++) {
+		curNode = curNode->nextNode;
+	}
+
+	ListNode *node;
+	node = (ListNode*)malloc(sizeof(ListNode));
+	node->data = info;
+
+	node->nextNode = curNode->nextNode;
+	curNode->nextNode = node;
+}
+
+// Delete a specified node
+void deleteAtPosition(int position) {
+	if(position == 0) {
+		frontDelete();
+	} else {
+		ListNode *prevNode;
+		prevNode = (ListNode*)malloc(sizeof(ListNode));
+
+		prevNode = firstNode;
+		for(int i = 0; i < position - 1; i++) {
+			prevNode = prevNode->nextNode;
+		}
+
+		prevNode->nextNode = prevNode->nextNode->nextNode;
+		free(prevNode);
+	}
+}
+
+// Sort the nodes
+void sort() {
+	ListNode *temp;
+	temp = (ListNode*)malloc(sizeof(ListNode));
+
+	ListNode *temp1;
+	temp1 = (ListNode*)malloc(sizeof(ListNode));
+
+	int holder;
+
+	for (temp = firstNode; temp != NULL; temp = temp->nextNode) {
+		for (temp1 = temp->nextNode; temp1 != NULL; temp1 = temp1->nextNode) {
+			if(temp->data > temp1->data) {
+				holder = temp->data;
+				temp->data = temp1->data;
+				temp1->data = holder;
 			}
 		}
-		ListNode *node;
-		node = (ListNode*)malloc(sizeof(ListNode));
-		node->data = info;
-
-		node->nextNode = curNode->nextNode;
-		curNode->nextNode = node;
 	}
+
+	free(temp);
+	free(temp1);
 }
 
 // Iterator
@@ -103,11 +139,15 @@ void printList() {
 
 // Testing
 int main() {
-	frontInsert("cool");
-	behindInsert("trist");
-	behindInsert("twitch");
-	behindDelete();
-	behindDelete();
+	frontInsert(1);
+	behindInsert(3);
+	behindInsert(2);
+	behindInsert(7);
+	behindInsert(2);
+	behindInsert(3);
+	behindInsert(1);
+
+	sort();
 	printList();
 	return 0;
 }
